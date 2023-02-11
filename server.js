@@ -35,6 +35,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false, maxAge: 60 * 10000 }, // 10 minutos
+    rolling: true
   })
 );
 
@@ -59,9 +60,11 @@ app.post("/login", (req, res) => {
   res.redirect("/");
 });
 
-app.get("/", (req, res) => {
+app.get("/", (req, res, next) => {
 
-  if(req.session.username){
+  if(req.session && req.session.username){
+    req.session.cookie.expires = new Date(Date.now() + 600000);
+
     const nombre = req.session.username;
     res.render("inicio", { nombre });
 
